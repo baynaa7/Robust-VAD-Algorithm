@@ -1,8 +1,9 @@
+
 winLen = 1024; 
 shiftLen = 128;
 fs = 16000;
 
-audioFileName = 'dev1_male4_liverec_250ms_5cm_mix.wav';
+audioFileName = 'dev1_male4_inst_mix.wav';
 [audio1meter3source,sampleRate] = audioread(audioFileName);%data used in GCC-NMF
 x1 = audio1meter3source(:,1);
 x2 = audio1meter3source(:,2);
@@ -19,16 +20,18 @@ for frameN =  1:TotFrames
         x1FrameWindowed =  x1FrameN(:,frameN).*winFunction;
         x2FrameWindowed =  x2FrameN(:,frameN).*winFunction;
        
-        [val0,val1] = VAD_algorithm(x1FrameWindowed,x2FrameWindowed,winLen);
+%         [val0,val1] = VAD_algorithm_stereo(x1FrameWindowed,x2FrameWindowed,winLen);
+        [val0,val1] = VAD_algorithm_mono(x1FrameWindowed,winLen);
         if val0 > val1
             vad(frameN) = 1;        
         end
 end
 
     subplot(311);
-    hold on,
+%     hold on,
     grid on,plot(timS,x1,'r'),xlabel('time (sec)');
-    plot(timS,x2,'b');legend('ch1','ch2');
+%     plot(timS,x2,'b');legend('ch1','ch2');
+    legend('ch1');
 
     subplot(312),
     plot(vad),  xlim([0 TotFrames]),ylim([-.1 1.1]),legend('vad');xlabel('Frames');
